@@ -1,0 +1,76 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="/src/kg-firebase.html">
+<link rel="import" href="/src/kg-user-mixin.html">
+
+<dom-module id="kg-drawings">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: block;
+      }
+
+    </style>
+    <h1>Drawings</h1>
+    <button type="button" on-click="_newDrawing">New Drawing</button>
+    <firebase-document
+      id="doc"
+      path="/drawings"
+      data="{{_drawings}}"></firebase-document>
+
+    <ul>
+      <template is="dom-repeat" items="[[_drawingsArr]]">
+        <li>
+          <a href="/drawing/[[item.id]]">[[_getName(item)]]</a>
+        </li>
+      </template>
+    </ul>
+  </template>
+
+  <script>
+  (function() {
+
+    class KGDrawings extends KGUser(Polymer.Element) {
+
+      static get is() { return 'kg-drawings'; }
+      static get properties() {
+        return {
+          _drawings: {
+            type: Object,
+            observer: 'drawingsObserver'
+          }
+        }
+      };
+      _getName(item){
+        return item.name || item.id;
+      }
+      _newDrawing(){
+        const ref = this.$.doc.ref.push();
+        window.location = `/drawing/${ref.key}`;
+      }
+      drawingsObserver(_drawings){
+        this._drawingsArr = Object.keys(_drawings).map((k) => {
+          _drawings[k].id = k;
+          return _drawings[k];
+        });
+
+      }
+    }
+
+    customElements.define(KGDrawings.is, KGDrawings);
+
+  })();
+  </script>
+</dom-module>

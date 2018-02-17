@@ -1,0 +1,62 @@
+{
+  "hosting": {
+    "public": "build/es6-bundled",
+    "rewrites": [
+      {
+        "source": "!/__/**",
+        "destination": "/index.html"
+      },
+      {
+        "source": "**/!(*.js|*.html|*.css|*.json|*.svg|*.png|*.jpg|*.jpeg)",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "/recipe/*",
+        "headers": [
+          {
+            "key": "Link",
+            "value": "</node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/cb-app.html>;rel=preload;as=document,</src/cb-recipe.html>;rel=preload;as=document"
+          }
+        ]
+      },
+      {
+        "source": "/user/*",
+        "headers": [
+          {
+            "key": "Link",
+            "value": "</node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/cb-app.html>;rel=preload;as=document,</src/cb-user.html>;rel=preload;as=document"
+          }
+        ]
+      },
+      {
+        "source": "/",
+        "headers": [
+          {
+            "key": "Link",
+            "value": "</node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/cb-app.html>;rel=preload;as=document,</src/cb-list.html>;rel=preload;as=document,</src/cb-sign-in.html>;rel=preload;as=document,</api/categories>;rel=preload"
+          }
+        ]
+      },
+      {
+        "source": "/top/**",
+        "headers": [
+          {
+            "key": "Link",
+            "value": "</node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/cb-app.html>;rel=preload;as=document,</src/cb-list.html>;rel=preload;as=document,</cb/news?page=1>;rel=preload"
+          }
+        ]
+      },
+      {
+        "source": "/?(new|ask|show|jobs)/**",
+        "headers": [
+          {
+            "key": "Link",
+            "value": "</node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js>;rel=preload;as=script,</src/cb-app.html>;rel=preload;as=document,</src/cb-list.html>;rel=preload;as=document"
+          }
+        ]
+      }
+    ]
+  }
+}

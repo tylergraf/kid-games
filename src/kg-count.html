@@ -1,0 +1,176 @@
+
+
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/polymer/lib/mixins/gesture-event-listeners.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="kg-count">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+      section {
+        display: flex;
+        flex-flow: wrap;
+        align-items: center;
+        padding: 10px;
+      }
+      .count {
+        font-size: 60px;
+        text-align: center;
+      }
+      .item {
+        width: 80px;
+        height: 80px;
+        background: var(--green-color);
+        border-radius: 50%;
+        border: 3px solid #fff;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+      .item.counted {
+        visibility: hidden;
+      }
+      header {
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--blue-color);
+        color: #fff;
+        padding: 10px;
+      }
+      h1 {
+        color: #fff;
+      }
+      .buttons {
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
+        align-items: center;
+      }
+      button {
+        background: var(--blue-color);
+        color: #fff;
+        font-size: 26px;
+        margin-top: 20px;
+        font-family: inherit;
+        border: none;
+        padding: 10px 20px;
+      }
+      @media (max-width: 500px) {
+        .item {
+          width: 20vw;
+          height: 20vw;
+          margin: 0;
+          margin-bottom: 10px;
+        }
+        section {
+          justify-content: space-between;
+        }
+      }
+    </style>
+      <div class="count">[[counted]]</div>
+
+      <div class="buttons">
+        <button type="button" on-tap="_reset" hidden$="[[!_showReset(counted, items)]]">Play Again!!</button>
+      </div>
+      <section hidden$="[[_showReset(counted, items)]]">
+        <template is="dom-repeat" items="[[items]]">
+          <div on-tap="_count" item="[[index]]" class$="item[[_computeCountedClass(item.counted)]]"></div>
+        </template>
+      </section>
+
+
+      <audio id="1" src="/audio/ok/1.mp3"></audio>
+      <audio id="2" src="/audio/ok/2.mp3"></audio>
+      <audio id="3" src="/audio/ok/3.mp3"></audio>
+      <audio id="4" src="/audio/ok/4.mp3"></audio>
+      <audio id="5" src="/audio/ok/5.mp3"></audio>
+      <audio id="6" src="/audio/ok/6.mp3"></audio>
+      <audio id="7" src="/audio/ok/7.mp3"></audio>
+      <audio id="8" src="/audio/ok/8.mp3"></audio>
+      <audio id="9" src="/audio/ok/9.mp3"></audio>
+      <audio id="10" src="/audio/ok/10.mp3"></audio>
+      <audio id="11" src="/audio/ok/11.mp3"></audio>
+      <audio id="12" src="/audio/ok/12.mp3"></audio>
+      <audio id="13" src="/audio/ok/13.mp3"></audio>
+      <audio id="14" src="/audio/ok/14.mp3"></audio>
+      <audio id="15" src="/audio/ok/15.mp3"></audio>
+      <audio id="16" src="/audio/ok/16.mp3"></audio>
+      <audio id="17" src="/audio/ok/17.mp3"></audio>
+      <audio id="18" src="/audio/ok/18.mp3"></audio>
+      <audio id="19" src="/audio/ok/19.mp3"></audio>
+      <audio id="20" src="/audio/ok/20.mp3"></audio>
+      <audio id="whistle" src="/audio/ok/whistle.mp3"></audio>
+      <audio id="wooo" src="/audio/ok/wooo.mp3"></audio>
+      <audio id="way-to-go" src="/audio/ok/way-to-go.mp3"></audio>
+  </template>
+
+  <script>
+  function getRandomInt(min,max){
+    return Math.floor(Math.random()*(max-min+1)+min);
+  }
+    class GameCount extends Polymer.GestureEventListeners(Polymer.Element) {
+
+      static get is() { return 'kg-count'; }
+
+      static get properties() {
+        return {
+          items: {
+            type: Array,
+            value: function(){
+              var rand = getRandomInt(10,20);
+              return Array.apply(null, Array(rand)).map((val) => Object.assign({counted: false}));
+            }
+          },
+          counted: {
+            type: String
+          }
+        };
+      }
+      static get observers(){
+        return [
+          '_numCounted(items)'
+        ]
+      }
+      _count(e){
+        this.set('items.'+e.target.item+'.counted', true)
+        this._numCounted(this.items);
+        this.$[this.counted].play();
+      }
+      _computeCountedClass(counted){
+        return counted ? ' counted' : '';
+      }
+      _numCounted(items){
+        this.set('counted',items.filter(i=>i.counted).length);
+        if(this.counted === this.items.length){
+          this.$.wooo.play();
+          this.$.whistle.play();
+          this.$['way-to-go'].play();
+        }
+      }
+      _showReset(counted, items){
+        return counted === items.length;
+      }
+      _reset(){
+
+        var rand = getRandomInt(10,20);
+
+        var arr = new Array(rand);
+
+        var items = Array.apply(null, Array(rand)).map((val, idx) => Object.assign({counted: false}));
+        this.items = items;
+        this.set('items', items);
+      }
+    }
+
+    window.customElements.define(GameCount.is, GameCount);
+  </script>
+</dom-module>

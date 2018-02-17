@@ -1,0 +1,188 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Polymer Starter Kit">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=0">
+
+    <title>Kid Games</title>
+    <meta name="description" content="Kid Games">
+    <link rel="dns-prefetch" href="https://gretchenscookbook-api.herokuapp.com">
+    <!-- See https://goo.gl/OOhYW5 -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- See https://goo.gl/qRE0vM -->
+    <meta name="theme-color" content="#283593">
+
+    <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Kid Games">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="My App">
+
+    <!-- Homescreen icons -->
+    <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
+
+    <!-- Tile icon for Windows 8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="/images/manifest/icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#3f51b5">
+    <meta name="msapplication-tap-highlight" content="no">
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Noto", sans-serif;
+        margin: 0 auto;
+        padding: 0;
+        /*background: linear-gradient(to right, #673ab7 0%,#673ab7 0%,#9c27b0 100%);*/
+      }
+      kg-app {
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+        position: absolute;
+        top: 48px;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        background: #fff;
+      }
+      header {
+        background: linear-gradient(to right, #673ab7 0%,#9c27b0 60%,#9c27b0 100%);
+        height: 48px;
+      }
+      nav {
+        /* max-width: 500px; */
+        /* margin: 0 auto; */
+        padding: 0;
+        box-sizing: border-box;
+        white-space: nowrap;
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        height: 100%;
+      }
+
+      nav > a {
+        color: white;
+        display: inline-block;
+        vertical-align: middle;
+        font-weight: 300;
+        letter-spacing: .075em;
+        margin-left: 0.5em;
+        text-decoration: none;
+      }
+
+      /*.logo {
+        height: 24px;
+        width: 24px;
+        vertical-align: middle;
+        fill: white;
+      }*/
+
+      @keyframes pulse {
+        0% { transform: scale(1); opacity: 0; }
+        50% { transform: scale(1.2); opacity: 1; }
+      }
+
+      .loading {
+        text-align: center;
+        transition: all ease 300ms;
+      }
+
+      .loading > * {
+        animation: pulse 1s infinite ease-in-out;
+        will-change: opacity, transform;
+        display: inline-block;
+        padding: 0;
+      }
+
+      .kg-popular .popular,
+      .kg-search .search,
+      .kg-favorites .favorites,
+      .kg-show .show,
+      .kg-jobs .jobs {
+        color: #f5d328;
+      }
+      .logo {
+        padding: 8px;
+        margin: 0;
+      }
+      .logo svg {
+        fill: #fff;
+        text-decoration: none;
+      }
+      .flex {
+        flex-grow: 1;
+      }
+      .hide {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+
+      <nav>
+        <a class="logo" href="/" title="Kid Games Home">Home</a>
+        <a class="popular" href="/drawings">Drawings</a>
+        <span class="flex"></span>
+        <kg-sign-in></kg-sign-in>
+      </nav>
+    </header>
+    <kg-app role="main">
+      <!-- <div slot="load" class="loading">
+        <div>• • •</div>
+      </div> -->
+    </kg-app>
+
+    <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+    <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script>
+      // base fetch url
+      // url for server proxy to api, when running locally switch url's
+      // const fetchBaseUrl = '/api';
+      // const fetchBaseUrl = 'https://gretchenscookbook-api.herokuapp.com/api';
+      const fetchBaseUrl = 'http://localhost:3000/api';
+
+      // fetch(fetchBaseUrl.replace('/api','/'));
+    </script>
+    <!-- Load your application shell -->
+    <link rel="import" href="/src/kg-app.html">
+    <link rel="import" href="/src/kg-sign-in.html">
+    <link rel="import" href="/src/kg-firebase.html">
+
+    <!-- Load and register pre-caching Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/service-worker.js');
+        });
+      }
+    </script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50584064-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-50584064-1');
+    </script>
+
+  </body>
+</html>

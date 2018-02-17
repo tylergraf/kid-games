@@ -1,0 +1,268 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/utils/import-href.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="simple-router.html">
+<link rel="import" href="kg-user-mixin.html">
+
+<script src="fetch.js"></script>
+<script src="../bower_components/localforage/dist/localforage.nopromises.min.js" charset="utf-8"></script>
+
+<dom-module id="kg-app">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+        background-color: white;
+        --detail-font-size: 0.75rem;
+        --detail-font-color: #666;
+        --separator-border: 1px solid #eee;
+      }
+      section {
+        min-height: 100%;
+      }
+      .views > :not(.selectedView) {
+        display: none !important;
+      }
+
+      .views > * {
+        padding: 1rem;
+      }
+
+      .loading {
+        color: var(--detail-font-color);
+      }
+      [hidden] {
+        display: none;
+      }
+      .loading-wrapper {
+        height: 0;
+        transition: height 300ms ease;
+      }
+      .loading-wrapper.true {
+        height: 20px;
+      }
+    </style>
+    <section>
+      <simple-router path="{{_path}}"></simple-router>
+      <slot></slot>
+      <div class="loading-wrapper [[_loading]]">
+        <div class="loading" hidden="[[!_loading]]">
+          <slot name="load"></slot>
+        </div>
+      </div>
+      <iron-pages selected="[[_view]]" attr-for-selected="page" fallback-selection="home">
+        <kg-home page="home"></kg-home>
+        <kg-drawings page="drawings"></kg-drawings>
+        <kg-drawing page="drawing" drawing-id="[[_drawingId]]"></kg-drawing>
+        <kg-hammer page="hammer"></kg-hammer>
+        <kg-count page="count"></kg-count>
+        <kg-404></kg-404>
+      </iron-pages>
+    </section>
+
+  </template>
+
+  <script>
+  (function() {
+
+    // custom list-type for route page
+    const pageToListType = {
+      top: 'categories',
+      category: 'subcategories',
+      subcategory: 'recipes',
+      recipe: 'recipe',
+      edit: 'edit-recipe',
+      search: 'search',
+      popular: 'popular',
+      favorites: 'favorites',
+      user: 'user/recipes',
+      collections: 'collections',
+      collection: 'collection',
+    }
+    const pageToPath = {
+      top: 'home',
+      category: 'subcategory',
+      subcategory: 'recipe',
+      search: 'recipe',
+      popular: 'recipe',
+      favorites: 'recipe',
+      user: 'recipe',
+      collection: 'recipe',
+      collections: 'collection',
+    }
+
+    class KGApp extends KGUser(Polymer.Element) {
+
+      static get is() { return 'kg-app'; }
+
+      static get observers() {
+        return [
+          '_routeChanged(_path)',
+          // '_fetchList(signedIn, _listPath, _listId)',
+          // '_fetchItem(signedIn, _itemId)',
+          '_viewChanged(_view)',
+          // '_selectedClass(_view, _listType)'
+        ];
+      }
+      static get properties() {
+        return {
+          _hideSearch: {
+            type: Boolean,
+            value: true
+          }
+        };
+      }
+      ready(){
+        super.ready();
+        this.addEventListener('refresh-data', e=>{
+          this.__itemId = this._itemId;
+          this._itemId = '';
+          this._itemId = this.__itemId;
+          this.__listId = this._listId;
+          this._listId = '';
+          this._listId = this.__listId;
+        });
+      }
+      _routeChanged(path) {
+        let [page, detail] = path;
+        if (!page) {
+          page = 'top';
+        }
+        let props = {};
+        let pending = this._pendingFetch = {};
+        switch(page) {
+          case 'top':
+            props._view = 'home';
+            props._listType = page;
+
+            break
+          case 'drawings':
+            props._view = 'drawings';
+            break
+          case 'drawing':
+            props._view = 'drawing';
+            props._drawingId = detail;
+
+            break
+          default:
+            props._view = page;
+            props._listType = page;
+            break;
+        }
+        pending._view = props._view;
+        this.setProperties(props);
+      }
+
+      // called when coming back online...
+      _refreshRoute() {
+        // refresh pending route path if in offline state.
+        if (this._view == 'offline' && this._pendingFetch) {
+          this.setProperties(this._pendingFetch);
+        }
+      }
+
+      _fetchList(signedIn, path, id) {
+        if(signedIn === undefined) return;
+
+        if (path) {
+          let url = `${fetchBaseUrl}/${path}`;
+          if (id) {
+            url += `/${id}`;
+          }
+          if(path === 'categories' && window.location.host === 'gretchenscookbook.com'){
+            url = '/api/categories'
+          }
+          this._loading = true;
+          localforage.getItem(url)
+            .then(data=>{
+              this._listData = data || [];
+              return this._fetch(url);
+            })
+            .then(data => {
+              this._listData = data.map(c=>{
+                c.url = `/${this._itemPath}/${c._id}`;
+                c.title = c.title || c.name;
+                return c;
+              });
+              localforage.setItem(url,this._listData);
+            }, () => this._listPage = null)
+            .catch(err=>{
+              localforage.removeItem(url);
+            });
+        }
+      }
+
+      _fetchItem(signedIn, id) {
+        if(signedIn === undefined) return;
+        if (id) {
+          var url = `${fetchBaseUrl}/recipe/${id}`;
+          this._loading = true;
+          localforage.getItem(url)
+            .then(data=>{
+              this._itemData = data || null;
+              return this._fetch(url)
+            })
+            .then(data => {
+              this._itemData = data;
+              localforage.setItem(url,data);
+            }, (e) => this._itemId = null);
+        }
+      }
+      _fetch(url) {
+        // scroll to top when fetching
+        document.body.scrollTop = 0;
+        return _fetch(url).then(data => {
+          this._pendingFetch = null;
+          this._loading = false;
+          return data;
+        })
+        .catch(reject => {
+          if (!navigator.onLine) {
+            this._view = 'offline';
+          }
+          this._loading = false;
+          return Promise.reject(reject);
+        });
+      }
+
+      _viewChanged(view) {
+        // Load page import on demand. Show 404 page if fails
+        var resolvedPageUrl = this.resolveUrl('kg-' + view + '.html');
+        Polymer.importHref(resolvedPageUrl, null, ()=>this._view='404', true);
+      }
+
+      _viewClass(name, view) {
+        return name == view ? 'selectedView' : '';
+      }
+
+      // indicate selected list/tab; here we throw a class on body
+      // to be able to coordinate with the nav bar which is in body.
+      _selectedClass(view, page) {
+        let root = document.body;
+        if (this._prevSelectedClass) {
+          root.classList.remove(this._prevSelectedClass);
+        }
+        if (view == 'list') {
+          this._prevSelectedClass = `kg-${page}`;
+          root.classList.add(this._prevSelectedClass);
+        }
+      }
+
+    }
+
+    window.customElements.define(KGApp.is, KGApp);
+
+  })();
+  </script>
+</dom-module>

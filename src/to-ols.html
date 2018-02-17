@@ -1,0 +1,121 @@
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
+
+<dom-module id="to-ols">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+      }
+      button {
+        height: 60px;
+        width: 60px;
+        border: 2px solid transparent;
+        background: none;
+        margin-left: 5px;
+        cursor: pointer;
+      }
+      [color=blue] {
+        background-color: #2196F3;
+      }
+      [color=red] {
+        background-color: #f44336;
+      }
+      [color=green] {
+        background-color: #4CAF50;
+      }
+      [color=yellow] {
+        background-color: #FFEB3B;
+      }
+      [color=purple] {
+        background-color: #673AB7;
+      }
+      [color=brown] {
+        background-color: #795548;
+      }
+      [color=black] {
+        background-color: #212121;
+      }
+      [color=white] {
+        background-color: #fff;
+      }
+      [selected] {
+        border-color: #000;
+      }
+      @media(max-width: 480px){
+        button {
+          width: 30px;
+          height: 30px;
+        }
+      }
+      [hidden] {
+        display: none !important;
+      }
+      .radius {
+        border-radius: 50%;
+        background: #000;
+        margin-left: 10px;
+      }
+      .radius-wrapper {
+        display: flex;
+        align-items: center;
+      }
+    </style>
+    <ul id="colors">
+      <!-- <li><button selected$="[[_colorSelected(item.color, item.hex)]]" hex$="[[item.hex]]" style$="background-color:[[item.hex]];" color$="[[item.color]]" type="button" on-click="_selectColor">Move</button></li>
+      <li><button selected$="[[_colorSelected(item.color, item.hex)]]" hex$="[[item.hex]]" style$="background-color:[[item.hex]];" color$="[[item.color]]" type="button" on-click="_selectColor">Draw</button></li> -->
+      <li><label for="pulse">Pulse</label><input id="pulse" type="checkbox" value="{{pulse::input}}"></li>
+      <li class="radius-wrapper"><input type="range" value="{{radius::input}}" max="100" min=".5"> <div class="radius" style$="height:[[radius]]px;width:[[radius]]px"></div></li>
+    </ul>
+
+  </template>
+
+  <script>
+  (()=>{
+
+    class ToolsElement extends Polymer.Element {
+      static get is() { return 'to-ols'; }
+      static get properties() {
+        return {
+          tool: {
+            type: String,
+            value: function(){
+              return localStorage['color'];
+            },
+            notify: true
+          },
+          pulse: {
+            type: String,
+            value: function(){
+              return localStorage['pulse'];
+            },
+            observer: '_pulseObserver',
+            notify: true
+          },
+          radius: {
+            type: String,
+            value: function(){
+              return localStorage['radius'] || '2';
+            },
+            observer: '_radiusObserver',
+            notify: true
+          }
+        };
+      }
+      _radiusObserver(radius){
+        localStorage['radius'] = radius;
+      }
+      _pulseObserver(pulse){
+        localStorage['pulse'] = pulse;
+      }
+    }
+    window.customElements.define(ToolsElement.is, ToolsElement);
+
+  })();
+  </script>
+</dom-module>

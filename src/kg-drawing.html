@@ -1,0 +1,395 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="/src/kg-firebase.html">
+<link rel="import" href="/src/kg-user-mixin.html">
+<link rel="import" href="/src/col-ors.html">
+<link rel="import" href="/src/to-ols.html">
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+<!-- <script src="/node_modules/d3-dispatch/build/d3-dispatch.js"></script>
+<script src="/node_modules/d3-zoom/build/d3-zoom.js"></script>
+<script src="/node_modules/d3-selection/dist/d3-selection.js"></script>
+<script src="/node_modules/d3-transition/build/d3-transition.js"></script> -->
+<script src="/bower_components/sketch.js/js/sketch.js"></script>
+<script src="/bower_components/js-uuids/js-uuid.js"></script>
+
+<dom-module id="kg-drawing">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: block;
+        background-repeat: no-repeat;
+        font-family: sans-serif;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+      .canvas-wrapper {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+      header {
+        position: absolute;
+        top: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+      }
+      footer {
+        position: absolute;
+        bottom: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+      }
+      canvas {
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+      button {
+        background: none;
+        border: none;
+        font-size: 20px;
+        font-family: sans-serif;
+        font-weight: bold;
+        padding: 10px;
+        margin: 0;
+        cursor: pointer;
+      }
+      .background-img {
+        display: flex;
+        flex-flow: column;
+        margin: 10px;
+        width: 400px;
+      }
+      .background-img input {
+        border: 1px solid #ccc;
+      }
+    </style>
+    <firebase-document
+        id="userSketches"
+        path="/drawings/[[drawingId]]/userSketches"
+        data="{{_userSketches}}"></firebase-document>
+
+    <firebase-document
+        id="doc"
+        path="/drawings/[[drawingId]]"
+        data="{{_drawing}}"></firebase-document>
+    <div id="canvasWrapper" class="canvas-wrapper"></div>
+    <header>
+      <button on-click="_undo">Undo</button>
+      <button on-click="_clear">Clear</button>
+      <col-ors color="{{_color}}" hex="{{_hex}}"></col-ors>
+      <to-ols tool="{{_tool}}" radius="{{_radius}}" pulse="{{_pulse}}"></to-ols>
+    </header>
+    <footer>
+      <h1>[[_drawing.name]]</h1>
+      <div class="background-img">
+        <label for="img">Background Image</label>
+        <input id="img" value="{{_drawing.background::input}}">
+      </div>
+    </footer>
+  </template>
+
+  <script>
+  var radius = 0;
+  (()=>{
+    var tempLine = [];
+
+    class KGDrawing extends KGUser(Polymer.Element) {
+
+      static get is() { return 'kg-drawing'; }
+      static get properties() {
+        return {
+          drawingId: {
+            type: String
+          },
+          _drawing: {
+            type: Object
+          },
+          _users: {
+            type: Array,
+            observer: '_usersObserver'
+          },
+          _transform: {
+            type: Object,
+            value: {
+              x: 0,
+              y: 0,
+              k: 1
+            }
+          },
+          _uid: {
+            type: String,
+            value: function(){
+              sessionStorage.uid = sessionStorage.uid || uuid.v4();
+              return sessionStorage.uid;
+            }
+          }
+        }
+      };
+      static get observers() {
+        return [
+          '_imageObserver(_drawing.background)',
+          '_userObserver(signedIn,_drawing)',
+          '_userSketchesObserver(_userSketches)',
+          '_sketchesObserver(_drawing.userSketches)'
+        ]
+      };
+      _sketchesObserver(users){
+        if(users === undefined) return;
+        this._users = Object.keys(users);
+      }
+      _usersObserver(users, oldUsers){
+        if(users === undefined) return;
+        users
+          .filter(u=>{
+            if(!oldUsers){
+              return u!==this._uid;
+            } else {
+              return u!==this._uid && !oldUsers.includes(u);
+            }
+          })
+          .forEach(u=>{
+          this.$.userSketches.ref.child(u).on('child_added',(d)=>{
+            var {line, color} = d.val();
+
+            line.forEach((l,i)=>{
+
+              var prevTouch = {x: line[i-1] ? line[i-1].x : l.x, y: line[i-1] ? line[i-1].y : l.y};
+              var touch = {x: l.x, y: l.y, ox: prevTouch.x, oy: prevTouch.y};
+
+              this.sketch.draw(touch, 0, color, l.radius);
+            });
+          });
+          this.$.userSketches.ref.child(u).on('child_removed',(d)=>{
+            this._redraw();
+          });
+        })
+      }
+      _redraw(){
+        if(!this.initialized) return;
+
+        this.initialized = false;
+        this.sketch.clear();
+        if(this.backgroundImg){
+          this.sketch.drawImage(this.backgroundImg,0,0,this.backgroundImg.naturalWidth,this.backgroundImg.naturalHeight);
+        }
+        this._users.forEach(u=>this.$.userSketches.ref.child(u).off('child_added'));
+        this._userObserver(this.signedIn, this._drawing);
+        this._usersObserver(this._users);
+      }
+      _userObserver(signedIn,_drawing){
+        if(signedIn === undefined || _drawing === undefined || JSON.stringify(_drawing) === JSON.stringify({})) return;
+        if(this.initialized){
+          return;
+        }
+        this.initialized = true;
+
+        if(signedIn){
+          this._uid = this.user.uid;
+        } else {
+          this._uid = sessionStorage.uid;
+        }
+
+        if(!_drawing.userSketches){
+          _drawing.userSketches = {};
+          _drawing.userSketches[this._uid] = [];
+        }
+        if(!_drawing.userSketches[this._uid]){
+          _drawing.userSketches[this._uid] = [];
+        } else {
+
+          _drawing.userSketches[this._uid].forEach(d=>{
+            var {line, color} = d;
+            line.forEach((l,i)=>{
+              var prevTouch = {x: line[i-1] ? line[i-1].x : l.x, y: line[i-1] ? line[i-1].y : l.y};
+              var touch = {x: l.x, y: l.y, ox: prevTouch.x, oy: prevTouch.y};
+
+              this.sketch.draw(touch, 0, color, l.radius);
+            });
+          })
+        }
+
+      }
+      _userSketchesObserver(_userSketches){
+        if(!Object.keys(_userSketches).length){
+          this.sketch && this.sketch.clear();
+        }
+        Object.keys(_userSketches).forEach((k) => {
+          if(k !== this._uid){
+            _userSketches[k].forEach(d=>{
+              var {touch, i, color, radius} = d;
+              this.sketch.draw(touch, i, color, radius);
+            })
+          }
+        });
+      }
+      _imageLoaded(e){
+        this._redraw();
+      }
+      _imageObserver(image){
+        if(image === undefined) return;
+        this.backgroundImg = new Image();
+        this.backgroundImg.crossOrigin = "anonymous";
+        this.backgroundImg.addEventListener('load',this._imageLoaded.bind(this));
+        this.backgroundImg.src = image;
+      }
+      _clear(){
+        if(confirm('Are you sure you want to clear?')){
+          this.sketch.clear();
+          this._userSketches = [];
+        }
+      }
+      _undo(){
+        this.undos.push(this.pop(`_userSketches.${this._uid}`));
+        setTimeout(_=>{
+          this._redraw();
+        });
+      }
+      _redo(){
+        if(!this.undos.length) return;
+        this._userSketches[this._uid] = this._userSketches[this._uid] || [];
+        this.push(`_userSketches.${this._uid}`,this.undos.pop());
+        setTimeout(_=>{
+          this._redraw();
+        });
+      }
+      ready(){
+        super.ready();
+        const zoomed = function(){
+          var transform = d3.event.transform;
+          this.root._transform = transform;
+          this.save();
+          this.clear();
+          this.translate(transform.x, transform.y);
+          this.scale(transform.k, transform.k);
+          this.clear();
+          this.root._redraw();
+          this.restore();
+        }
+
+
+
+        document.addEventListener('keydown', e=>{
+          if(e.key === 'z' && e.metaKey && e.shiftKey){
+            e.preventDefault();
+            this._redo();
+          } else if(e.key === 'z' && e.metaKey){
+            e.preventDefault();
+            this._undo();
+          }
+        })
+        this.sketch = Sketch.create({
+          root: this,
+          container: this.$.canvasWrapper,
+          autoclear: false,
+          retina: 'auto',
+          setup: function(){
+            d3.select(this.canvas).call(d3.zoom()
+              .scaleExtent([1 / 2, 8])
+              .on("zoom", zoomed.bind(this)))
+              .on("mousedown.zoom", null)
+              .on("dragstart.zoom", null);
+          },
+          update: function() {
+            // this.root._radius = this.root._radius + abs( sin( this.millis * 0.003 ) * 5 );
+          },
+          // Event handlers
+
+          keydown: function() {
+            if ( this.keys.C ) {
+              this.root._clear();
+            }
+          },
+          draw: function(e,i=0, color, rad, real){
+            if(!e) return;
+
+            if(real){
+              e.x += this.root._transform.x;
+              e.y += this.root._transform.y;
+            }
+            this.lineCap = 'round';
+            this.lineJoin = 'round';
+            this.fillStyle = this.strokeStyle = color;
+            this.lineWidth = rad;
+            let height = (this.root.img && this.root.img.height) ? this.root.img.height+this.height/this.root.img.height : this.height;
+            // let width = (this.root.img && this.root.img.width) ? this.root.img.width : this.width;
+            this.beginPath();
+            // this.moveTo( e.relativeOX*this.width, e.relativeOY*this.height );
+            // this.lineTo( e.relativeX*this.width, e.relativeY*this.height );
+            this.moveTo( e.ox, e.oy );
+            this.lineTo( e.x, e.y );
+            this.stroke();
+          },
+          // Mouse & touch events are merged, so handling touch events by default
+          // and powering sketches using the touches array is recommended for easy
+          // scalability. If you only need to handle the mouse / desktop browsers,
+          // use the 0th touch element and you get wider device support for free.
+          touchmove: function(e) {
+            if(e.type === 'mousemove' && !this.dragging || this.touches.length > 1) return;
+
+              for ( var i = this.touches.length - 1, touch; i >= 0; i-- ) {
+
+                  const touch = this.touches[i];
+
+                  const relativeX = touch.x - this.root._transform.x;
+                  const relativeY = touch.y - this.root._transform.y;
+
+                  // touch.y += this.root._transform.y*this.root._transform.k;
+
+                  const radius = this.root._radius * this.root._transform.k;
+
+                  this.draw(Object.assign(touch,{x:relativeX, y:relativeY}),i, this.root._hex, radius, true);
+
+                  tempLine.push({touch:{x:touch.x,y:touch.y}, i, color:this.root._hex, radius});
+              }
+          },
+          touchend: function(){
+            var line = tempLine.reduce((l,{touch,radius},i)=>{
+              if(i > 0 && touch.x === tempLine[i-1].touch.x && touch.y === tempLine[i-1].touch.y) return l;
+
+              return l.concat([{x:touch.x,y:touch.y, radius: this.root._radius}]);
+            },[]);
+
+            if(!this.root._drawing.userSketches[this.root._uid]){
+              this.root.set(`_drawing.userSketches.${this.root._uid}`,[]);
+            }
+
+            this.root.push(`_drawing.userSketches.${this.root._uid}`,{line, color:tempLine[0].color});
+            tempLine = [];
+            this.root.undos = [];
+          },
+          resize: function(){
+            this.root._redraw();
+          }
+        });
+      }
+    }
+
+    customElements.define(KGDrawing.is, KGDrawing);
+
+  })();
+  </script>
+</dom-module>

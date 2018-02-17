@@ -1,0 +1,24 @@
+{
+  "name": "kid-games",
+  "authors": [
+    "The Polymer Authors"
+  ],
+  "license": "https://polymer.github.io/LICENSE.txt",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^2.5.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.1.0",
+    "iron-pages": "polymerelements/iron-pages#^2.0.1",
+    "firebase": "^4.9.0",
+    "localforage": "localforage/localforage#^1.5.6",
+    "polymerfire": "firebase/polymerfire#^2.2.1",
+    "sketch.js": "soulwire/sketch.js",
+    "js-uuids": "jhewt/js-uuid#^0.0.6"
+  },
+  "devDependencies": {
+    "web-component-tester": "^6.0.0"
+  },
+  "private": true,
+  "resolutions": {
+    "webcomponentsjs": "^v1.0.2"
+  }
+}

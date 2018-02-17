@@ -1,0 +1,291 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="./kg-choose-taxonomy.html">
+<script src="../bower_components/marked/marked.min.js"></script>
+
+<dom-module id="kg-edit-recipe">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: block;
+        font-size: var(--detail-font-size);
+      }
+
+      a {
+        color: currentColor;
+      }
+
+      .title, .subtitle {
+        font-size: 1rem;
+        display: block;
+      }
+
+      .title {
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      .subtitle {
+        color: var(--detail-font-color);
+      }
+
+      .spacer {
+        padding-right: .5em;
+      }
+
+      .meta {
+        padding: 8px 0;
+        color: var(--detail-font-color);
+        border-bottom: var(--separator-border);
+      }
+      .support {
+        color: var(--detail-font-color);
+        margin-top: 30px;
+      }
+      label {
+        margin-top: 10px;
+        margin-bottom: 4px;
+        display: block;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      input,
+      textarea {
+        font-size: 13px;
+      }
+      input {
+        border: 1px solid #E0E0E0;
+        padding: 3px;
+        display: block;
+        width: 400px;
+        max-width: 100%;
+      }
+      textarea {
+        min-width: 300px;
+        max-width: 100%;
+        width: 400px;
+        min-height: 50px;
+        max-height: 300px;
+        border-color: #E0E0E0;
+      }
+      .button {
+        background: #8BC34A;
+        color: #fff;
+        border: none;
+        font-size: 16px;
+        padding: 8px 16px;
+        border-radius: 3px;
+        cursor: pointer;
+        text-decoration: none;
+        margin-right: 10px;
+      }
+      .button.minor {
+        background: #fff;
+        color: inherit;
+      }
+      .button.warn {
+        background: #f44336;
+        font-size: 12px;
+      }
+      .button.warn:hover {
+        background: #e57373;
+      }
+      .button.warn:active {
+        background: #d32f2f;
+      }
+      .button:hover {
+        background: #AED581;
+      }
+      .button:active {
+        background: #689F38;
+      }
+      .button.minor:hover {
+        text-decoration: underline;
+        background: #fff;
+      }
+      .rendered {
+        margin-bottom: 20px;
+        margin-top: 10px;
+        background: #f4f4f4;
+        padding: 1px 10px;
+      }
+      .alert {
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      .success {
+        background: #C8E6C9;
+        color: #689F38;
+      }
+      .error {
+        background: #ffcdd2;
+        color: #f44336;
+      }
+      header {
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .actions {
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    </style>
+    <header>
+      <h1>[[_getHeading(item)]] Recipe</h1>
+    </header>
+    <form on-submit="_save">
+      <label for="title">Recipe Title</label>
+      <input id="title" type="text" autofocus placeholder="Killer Hot Dogs" value="{{item.title::input}}">
+
+      <label for="subtitle">Author/Source</label>
+      <input id="subtitle" type="text" placeholder="Aunt Verna" value="{{item.subtitle::input}}">
+
+      <kg-choose-taxonomy subcategory-id="{{_subcategoryId}}"></kg-choose-taxonomy>
+
+      <label for="ingredients">Ingredients</label>
+      <textarea id="ingredients" on-keyup="_renderMD" value="{{item.md_ingredients::input}}"></textarea>
+      <div class="rendered" hidden="[[!item.ingredients]]" inner-h-t-m-l="[[item.ingredients]]"></div>
+
+      <label for="directions">Directions</label>
+      <textarea id="directions"on-keyup="_renderMD" value="{{item.md_directions::input}}"></textarea>
+      <div class="rendered" hidden="[[!item.directions]]" inner-h-t-m-l="[[item.directions]]"></div>
+
+      <p class="support">Ingredients and Directions can be Markdown. <a target="_blank" href="https://en.wikipedia.org/wiki/Markdown#Example">What's Markdown?</a></p>
+
+      <div class="alert success" hidden$="[[!_success]]">[[_successMessage]]</div>
+      <div class="alert error" hidden$="[[!_error]]">An Error Occurred.</div>
+      <section class="actions">
+        <div>
+          <button class="button" type="submit" on-click="_save">Save</button>
+          <a hidden="[[item._id]]" href="/" class="button minor">Cancel</a>
+          <a hidden="[[!item._id]]" href="/recipe/[[item._id]]" class="button minor">Cancel</a>
+        </div>
+        <span class="flex"></span>
+        <button hidden="[[!item._id]]" class="button warn" type="button" on-click="_delete">Delete Recipe</button>
+      </section>
+
+    </form>
+  </template>
+
+  <script>
+  (function() {
+    const renderer = new marked.Renderer();
+
+    class HnEditRecipe extends Polymer.Element {
+      static get is() { return 'kg-edit-recipe'; }
+      static get properties() {
+        return {
+          item: {
+            type: Object,
+            value: {}
+          },
+          _error: {
+            type: Boolean,
+            value: false
+          },
+          _success: {
+            type: Boolean,
+            value: false
+          }
+        };
+      }
+      static get observers() {
+        return [
+          '_md_ingredientsObserver(item.md_ingredients)',
+          '_md_directionsObserver(item.md_directions)',
+          '_updateSubcategory(item._subcategory._id, item._subcategory)'
+        ];
+      }
+      _updateSubcategory(_subcategoryId, subcategoryId2){
+        this._subcategoryId = _subcategoryId || subcategoryId2;
+      }
+      _md_directionsObserver(md_directions){
+        if(!md_directions) return;
+
+        let val = md_directions.split(/\r\n|\r|\n/).length * 16;
+        val = val < 150 ? val : 150;
+        this.$.directions.style.minHeight = `${val}px`;
+      }
+      _md_ingredientsObserver(md_ingredients){
+        if(!md_ingredients) return;
+
+        let val = md_ingredients.split(/\r\n|\r|\n/).length * 16;
+        val = val < 150 ? val : 150;
+        this.$.ingredients.style.minHeight = `${val}px`;
+      }
+      _renderMD(){
+        this.item.md_ingredients !== undefined && this.set('item.ingredients', marked(this.item.md_ingredients, {renderer}));
+        this.item.md_directions !== undefined && this.set('item.directions', marked(this.item.md_directions, {renderer}));
+      }
+      _getHeading(item){
+        return (!item._id) ? 'New' : 'Edit';
+      }
+      _save(e){
+        e.preventDefault();
+        this.item._subcategory = this._subcategoryId;
+        let url = this.item._id ? `${fetchBaseUrl}/recipe/${this.item._id}` : `${fetchBaseUrl}/recipe/new`;
+        let method = this.item._id ? 'put' : 'post';
+
+        _fetch(url, method, this.item)
+          .then(recipe=>{
+            this._error = false;
+            this._success = true;
+            this._successMessage = 'Recipe Saved Successfully.'
+            setTimeout(_=>{
+              pushUrl(`/recipe/${recipe._id}`);
+              this.dispatchEvent(new CustomEvent('refresh-data', {bubbles: true, composed: true}));
+              this._success = false;
+              this._error = false;
+            },1000);
+          })
+          .catch(_=>{
+            this._success = false;
+            this._error = true;
+          });
+      }
+
+      _delete(){
+        const confirmed = confirm('Are you sure?!');
+        if(confirmed){
+          fetch(`${fetchBaseUrl}/recipe/${this.item._id}`,{method: 'delete'})
+            .then(_=>{
+              localforage.removeItem(`${fetchBaseUrl}/recipe/${this.item._id}`);
+              this._error = false;
+              this._success = true;
+              this._successMessage = 'Recipe Deleted Successfully.'
+              setTimeout(_=>pushUrl(`/`),1000);
+              this._success = false;
+              this._error = false;
+            })
+            .catch(_=>{
+              this._success = false;
+              this._error = true;
+            });
+        }
+      }
+    }
+
+    customElements.define(HnEditRecipe.is, HnEditRecipe);
+
+
+    renderer.paragraph = function (text) {
+      const escapedText = text.replace(/\n/g, '<br>');
+
+      return `<p>${escapedText}</p>`;
+    }
+  })();
+  </script>
+</dom-module>

@@ -1,0 +1,154 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="./kg-taxonomy.html">
+<link rel="import" href="./kg-favorite.html">
+<link rel="import" href="./kg-note.html">
+<link rel="import" href="/src/kg-user-mixin.html">
+
+<dom-module id="kg-recipe">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: block;
+      }
+
+      a {
+        color: currentColor;
+      }
+
+      .title, .subtitle {
+        font-size: 1rem;
+      }
+
+      .title {
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .subtitle {
+        color: var(--detail-font-color);
+        margin-top: 0;
+      }
+
+      .spacer {
+        padding-right: .5em;
+      }
+
+      .meta {
+        padding: 8px 0;
+        color: var(--detail-font-color);
+        border-bottom: var(--separator-border);
+      }
+
+      .user {
+        color: var(--detail-font-color);
+      }
+      header {
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+      header a {
+        font-size: var(--detail-font-size);
+      }
+      .views {
+        font-weight: bold;
+        margin-right: 10px;
+      }
+      section {
+        display: flex;
+        align-items: center;
+      }
+      .flex {
+        flex: 1;
+      }
+      .img-wrapper {
+        height: 30px;
+        width: 30px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-right: 10px;
+        display: inline-block;
+      }
+      img {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    <kg-taxonomy category="[[item._subcategory._category]]" subcategory="[[item._subcategory]]"></kg-taxonomy>
+    <dom-if if="[[!loading]]">
+      <template>
+
+        <header>
+          <h1 class="title"inner-h-t-m-l="[[item.title]]"></h1>
+          <dom-if if="[[user]]">
+            <template>
+              <a href="/edit/[[item._id]]">Edit Recipe</a>
+            </template>
+          </dom-if>
+        </header>
+        <h2 class="subtitle"inner-h-t-m-l="[[item.subtitle]]"></h2>
+
+        <section>
+          <dom-if if="[[item._user]]">
+            <template>
+              <span class="img-wrapper">
+                <img src="[[item._user.picture]]" alt="[[item._user.name]]">
+              </span>
+              <a class="user-name" href="/user/[[item._user.uid]]">[[item._user.name]]</a>
+              <span class="flex"></span>
+            </template>
+          </dom-if>
+          <span class="views">[[item.views]] Views</span>
+          <kg-favorite hidden="[[!item.ingredients]]" recipe-id="[[item._id]]" count="[[item.favorites]]" favorited="[[item.favorited]]"></kg-favorite>
+        </section>
+
+        <h3 hidden="[[!item.ingredients]]">Ingredients</h3>
+        <div hidden="[[!item.ingredients]]" inner-h-t-m-l="[[item.ingredients]]"></div>
+        <h3 hidden="[[!item.directions]]">Directions</h3>
+        <div hidden="[[!item.directions]]" inner-h-t-m-l="[[item.directions]]"></div>
+
+        <dom-if if="[[user]]">
+          <template>
+            <h3>Notes</h3>
+            <kg-note note="[[item.note]]" recipe-id="[[item._id]]"></kg-note>
+          </template>
+        </dom-if>
+
+
+      </template>
+    </dom-if>
+  </template>
+
+  <script>
+  (function() {
+
+    class HnRecipe extends KGUser(Polymer.Element) {
+
+      static get is() { return 'kg-recipe'; }
+      static get properties() {
+        return {
+          loading: {
+            type: Boolean,
+            value: false
+          }
+        }
+      };
+    }
+
+    customElements.define(HnRecipe.is, HnRecipe);
+
+  })();
+  </script>
+</dom-module>

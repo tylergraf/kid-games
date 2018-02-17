@@ -1,0 +1,826 @@
+[{
+  "color": "Red",
+  "hex": "#F44336"
+}, {
+  "color": "Red-50",
+  "hex": "#FFEBEE"
+}, {
+  "color": "Red-100",
+  "hex": "#FFCDD2"
+}, {
+  "color": "Red-200",
+  "hex": "#EF9A9A"
+}, {
+  "color": "Red-300",
+  "hex": "#E57373"
+}, {
+  "color": "Red-400",
+  "hex": "#EF5350"
+}, {
+  "color": "Red-500",
+  "hex": "#F44336"
+}, {
+  "color": "Red-600",
+  "hex": "#E53935"
+}, {
+  "color": "Red-700",
+  "hex": "#D32F2F"
+}, {
+  "color": "Red-800",
+  "hex": "#C62828"
+}, {
+  "color": "Red-900",
+  "hex": "#B71C1C"
+}, {
+  "color": "Red-A100",
+  "hex": "#FF8A80"
+}, {
+  "color": "Red-A200",
+  "hex": "#FF5252"
+}, {
+  "color": "Red-A400",
+  "hex": "#FF1744"
+}, {
+  "color": "Red-A700",
+  "hex": "#D50000"
+}, {
+  "color": "Pink",
+  "hex": "#E91E63"
+}, {
+  "color": "Pink-50",
+  "hex": "#FCE4EC"
+}, {
+  "color": "Pink-100",
+  "hex": "#F8BBD0"
+}, {
+  "color": "Pink-200",
+  "hex": "#F48FB1"
+}, {
+  "color": "Pink-300",
+  "hex": "#F06292"
+}, {
+  "color": "Pink-400",
+  "hex": "#EC407A"
+}, {
+  "color": "Pink-500",
+  "hex": "#E91E63"
+}, {
+  "color": "Pink-600",
+  "hex": "#D81B60"
+}, {
+  "color": "Pink-700",
+  "hex": "#C2185B"
+}, {
+  "color": "Pink-800",
+  "hex": "#AD1457"
+}, {
+  "color": "Pink-900",
+  "hex": "#880E4F"
+}, {
+  "color": "Pink-A100",
+  "hex": "#FF80AB"
+}, {
+  "color": "Pink-A200",
+  "hex": "#FF4081"
+}, {
+  "color": "Pink-A400",
+  "hex": "#F50057"
+}, {
+  "color": "Pink-A700",
+  "hex": "#C51162"
+}, {
+  "color": "Purple",
+  "hex": "#9C27B0"
+}, {
+  "color": "Purple-50",
+  "hex": "#F3E5F5"
+}, {
+  "color": "Purple-100",
+  "hex": "#E1BEE7"
+}, {
+  "color": "Purple-200",
+  "hex": "#CE93D8"
+}, {
+  "color": "Purple-300",
+  "hex": "#BA68C8"
+}, {
+  "color": "Purple-400",
+  "hex": "#AB47BC"
+}, {
+  "color": "Purple-500",
+  "hex": "#9C27B0"
+}, {
+  "color": "Purple-600",
+  "hex": "#8E24AA"
+}, {
+  "color": "Purple-700",
+  "hex": "#7B1FA2"
+}, {
+  "color": "Purple-800",
+  "hex": "#6A1B9A"
+}, {
+  "color": "Purple-900",
+  "hex": "#4A148C"
+}, {
+  "color": "Purple-A100",
+  "hex": "#EA80FC"
+}, {
+  "color": "Purple-A200",
+  "hex": "#E040FB"
+}, {
+  "color": "Purple-A400",
+  "hex": "#D500F9"
+}, {
+  "color": "Purple-A700",
+  "hex": "#AA00FF"
+}, {
+  "color": "Deep-Purple",
+  "hex": "#673AB7"
+}, {
+  "color": "Deep-Purple-50",
+  "hex": "#EDE7F6"
+}, {
+  "color": "Deep-Purple-100",
+  "hex": "#D1C4E9"
+}, {
+  "color": "Deep-Purple-200",
+  "hex ": "#B39DDB"
+}, {
+  "color": "Deep-Purple-300",
+  "hex": "#9575CD"
+}, {
+  "color": "Deep-Purple-400",
+  "hex": "#7E57C2"
+}, {
+  "color": "Deep-Purple-500",
+  "hex": "#673AB7"
+}, {
+  "color": "Deep-Purple-600",
+  "hex": "#5E35B1"
+}, {
+  "color": "Deep-Purple-700",
+  "hex": "#512DA8"
+}, {
+  "color": "Deep-Purple-800",
+  "hex": "#4527A0"
+}, {
+  "color": "Deep-Purple-900",
+  "hex": "#311B92"
+}, {
+  "color": "Deep-Purple-A100",
+  "hex": "#B388FF"
+}, {
+  "color": "Deep-Purple-A200",
+  "hex": "#7C4DFF"
+}, {
+  "color": "Deep-Purple-A400",
+  "hex": "#651FFF"
+}, {
+  "color": "Deep-Purple-A700",
+  "hex": "#6200EA"
+}, {
+  "color": "Indigo",
+  "hex": "#3F51B5"
+}, {
+  "color": "Indigo-50",
+  "hex": "#E8EAF6"
+}, {
+  "color": "Indigo-100",
+  "hex": "#C5CAE9"
+}, {
+  "color": "Indigo-200",
+  "hex": "#9FA8DA"
+}, {
+  "color": "Indigo-300",
+  "hex": "#7986CB"
+}, {
+  "color": "Indigo-400",
+  "hex": "#5C6BC0"
+}, {
+  "color": "Indigo-500",
+  "hex": "#3F51B5"
+}, {
+  "color": "Indigo-600",
+  "hex": "#3949AB"
+}, {
+  "color": "Indigo-700",
+  "hex": "#303F9F"
+}, {
+  "color": "Indigo-800",
+  "hex": "#283593"
+}, {
+  "color": "Indigo-900",
+  "hex": "#1A237E"
+}, {
+  "color": "Indigo-A100",
+  "hex": "#8C9EFF"
+}, {
+  "color": "Indigo-A200",
+  "hex": "#536DFE"
+}, {
+  "color": "Indigo-A400",
+  "hex": "#3D5AFE"
+}, {
+  "color": "Indigo-A700",
+  "hex": "#304FFE"
+}, {
+  "color": "Blue",
+  "hex": "#2196F3"
+}, {
+  "color": "Blue-50",
+  "hex": "#E3F2FD"
+}, {
+  "color": "Blue-100",
+  "hex": "#BBDEFB"
+}, {
+  "color": "Blue-200",
+  "hex": "#90CAF9"
+}, {
+  "color": "Blue-300",
+  "hex": "#64B5F6"
+}, {
+  "color": "Blue-400",
+  "hex": "#42A5F5"
+}, {
+  "color": "Blue-500",
+  "hex": "#2196F3"
+}, {
+  "color": "Blue-600",
+  "hex": "#1E88E5"
+}, {
+  "color": "Blue-700",
+  "hex": "#1976D2"
+}, {
+  "color": "Blue-800",
+  "hex": "#1565C0"
+}, {
+  "color": "Blue-900",
+  "hex": "#0D47A1"
+}, {
+  "color": "Blue-A100",
+  "hex": "#82B1FF"
+}, {
+  "color": "Blue-A200",
+  "hex": "#448AFF"
+}, {
+  "color": "Blue-A400",
+  "hex": "#2979FF"
+}, {
+  "color": "Blue-A700",
+  "hex": "#2962FF"
+}, {
+  "color": "Light-Blue",
+  "hex": "#03A9F4"
+}, {
+  "color": "Light-Blue-50",
+  "hex": "#E1F5FE"
+}, {
+  "color": "Light-Blue-100",
+  "hex": "#B3E5FC"
+}, {
+  "color": "Light-Blue-200",
+  "hex": "#81D4FA"
+}, {
+  "color": "Light-Blue-300",
+  "hex": "#4FC3F7"
+}, {
+  "color": "Light-Blue-400",
+  "hex": "#29B6F6"
+}, {
+  "color": "Light-Blue-500",
+  "hex": "#03A9F4"
+}, {
+  "color": "Light-Blue-600",
+  "hex": "#039BE5"
+}, {
+  "color": "Light-Blue-700",
+  "hex": "#0288D1"
+}, {
+  "color": "Light-Blue-800",
+  "hex": "#0277BD"
+}, {
+  "color": "Light-Blue-900",
+  "hex": "#01579B"
+}, {
+  "color": "Light-Blue-A100",
+  "hex": "#80D8FF"
+}, {
+  "color": "Light-Blue-A200",
+  "hex": "#40C4FF"
+}, {
+  "color": "Light-Blue-A400",
+  "hex": "#00B0FF"
+}, {
+  "color": "Light-Blue-A700",
+  "hex": "#0091EA"
+}, {
+  "color": "Cyan",
+  "hex": "#00BCD4"
+}, {
+  "color": "Cyan-50",
+  "hex": "#E0F7FA"
+}, {
+  "color": "Cyan-100",
+  "hex": "#B2EBF2"
+}, {
+  "color": "Cyan-200",
+  "hex": "#80DEEA"
+}, {
+  "color": "Cyan-300",
+  "hex": "#4DD0E1"
+}, {
+  "color": "Cyan-400",
+  "hex": "#26C6DA"
+}, {
+  "color": "Cyan-500",
+  "hex": "#00BCD4"
+}, {
+  "color": "Cyan-600",
+  "hex": "#00ACC1"
+}, {
+  "color": "Cyan-700",
+  "hex": "#0097A7"
+}, {
+  "color": "Cyan-800",
+  "hex": "#00838F"
+}, {
+  "color": "Cyan-900",
+  "hex": "#006064"
+}, {
+  "color": "Cyan-A100",
+  "hex": "#84FFFF"
+}, {
+  "color": "Cyan-A200",
+  "hex": "#18FFFF"
+}, {
+  "color": "Cyan-A400",
+  "hex": "#00E5FF"
+}, {
+  "color": "Cyan-A700",
+  "hex": "#00B8D4"
+}, {
+  "color": "Teal",
+  "hex": "#009688"
+}, {
+  "color": "Teal-50",
+  "hex": "#E0F2F1"
+}, {
+  "color": "Teal-100",
+  "hex": "#B2DFDB"
+}, {
+  "color": "Teal-200",
+  "hex": "#80CBC4"
+}, {
+  "color": "Teal-300",
+  "hex": "#4DB6AC"
+}, {
+  "color": "Teal-400",
+  "hex": "#26A69A"
+}, {
+  "color": "Teal-500",
+  "hex": "#009688"
+}, {
+  "color": "Teal-600",
+  "hex": "#00897B"
+}, {
+  "color": "Teal-700",
+  "hex": "#00796B"
+}, {
+  "color": "Teal-800",
+  "hex": "#00695C"
+}, {
+  "color": "Teal-900",
+  "hex": "#004D40"
+}, {
+  "color": "Teal-A100",
+  "hex": "#A7FFEB"
+}, {
+  "color": "Teal-A200",
+  "hex": "#64FFDA"
+}, {
+  "color": "Teal-A400",
+  "hex": "#1DE9B6"
+}, {
+  "color": "Teal-A700",
+  "hex": "#00BFA5"
+}, {
+  "color": "Green",
+  "hex": "#4CAF50"
+}, {
+  "color": "Green-50",
+  "hex": "#E8F5E9"
+}, {
+  "color": "Green-100",
+  "hex": "#C8E6C9"
+}, {
+  "color": "Green-200",
+  "hex": "#A5D6A7"
+}, {
+  "color": "Green-300",
+  "hex": "#81C784"
+}, {
+  "color": "Green-400",
+  "hex": "#66BB6A"
+}, {
+  "color": "Green-500",
+  "hex": "#4CAF50"
+}, {
+  "color": "Green-600",
+  "hex": "#43A047"
+}, {
+  "color": "Green-700",
+  "hex": "#388E3C"
+}, {
+  "color": "Green-800",
+  "hex": "#2E7D32"
+}, {
+  "color": "Green-900",
+  "hex": "#1B5E20"
+}, {
+  "color": "Green-A100",
+  "hex": "#B9F6CA"
+}, {
+  "color": "Green-A200",
+  "hex": "#69F0AE"
+}, {
+  "color": "Green-A400",
+  "hex": "#00E676"
+}, {
+  "color": "Green-A700",
+  "hex": "#00C853"
+}, {
+  "color": "Light-Green",
+  "hex": "#8BC34A"
+}, {
+  "color": "Light-Green-50",
+  "hex": "#F1F8E9"
+}, {
+  "color": "Light-Green-100",
+  "hex": "#DCEDC8"
+}, {
+  "color": "Light-Green-200",
+  "hex": "#C5E1A5"
+}, {
+  "color": "Light-Green-300",
+  "hex": "#AED581"
+}, {
+  "color": "Light-Green-400",
+  "hex": "#9CCC65"
+}, {
+  "color": "Light-Green-500",
+  "hex": "#8B34"
+}, {
+  "color": "Light-Green-600",
+  "hex": "#7CB342"
+}, {
+  "color": "Light-Green-700",
+  "hex": "#689F3"
+}, {
+  "color": "Light-Green-800",
+  "hex": "#558B2F"
+}, {
+  "color": "Light-Green-900",
+  "hex": "#3391"
+}, {
+  "color": "Light-Green-A100",
+  "hex": "#CCFF90"
+}, {
+  "color": "Light-Green-A200",
+  "hex": "#B2FF59"
+}, {
+  "color": "Light-Green-A400",
+  "hex": "#76FF03"
+}, {
+  "color": "Light-Green-A700",
+  "hex": "#64D1"
+}, {
+  "color": "Lime",
+  "hex": "#CDDC39"
+}, {
+  "color": "Lime-50",
+  "hex": "#F9FBE7"
+}, {
+  "color": "Lime-100",
+  "hex": "#F0F4C3"
+}, {
+  "color": "Lime-200",
+  "hex": "#E6EE9C"
+}, {
+  "color": "Lime-300",
+  "hex": "#DCE775"
+}, {
+  "color": "Lime-400",
+  "hex": "#D4E157"
+}, {
+  "color": "Lime-500",
+  "hex": "#CDDC39"
+}, {
+  "color": "Lime-600",
+  "hex": "#C0CA33"
+}, {
+  "color": "Lime-700",
+  "hex": "#AFB42B"
+}, {
+  "color": "Lime-800",
+  "hex": "#9E9D24"
+}, {
+  "color": "Lime-900",
+  "hex": "#827717"
+}, {
+  "color": "Lime-A100",
+  "hex": "#F4FF81"
+}, {
+  "color": "Lime-A200",
+  "hex": "#EEFF41"
+}, {
+  "color": "Lime-A400",
+  "hex": "#C6FF00"
+}, {
+  "color": "Lime-A700",
+  "hex": "#AEEA00"
+}, {
+  "color": "Yellow",
+  "hex": "#FFEB3B"
+}, {
+  "color": "Yellow-50",
+  "hex": "#FFFDE7"
+}, {
+  "color": "Yellow-100",
+  "hex": "#FFF9C4"
+}, {
+  "color": "Yellow-200",
+  "hex": "#FFF59D"
+}, {
+  "color": "Yellow-300",
+  "hex": "#FFF176"
+}, {
+  "color": "Yellow-400",
+  "hex": "#FFEE58"
+}, {
+  "color": "Yellow-500",
+  "hex": "#FFEB3B"
+}, {
+  "color": "Yellow-600",
+  "hex": "#FDD835"
+}, {
+  "color": "Yellow-700",
+  "hex": "#FBC02D"
+}, {
+  "color": "Yellow-800",
+  "hex": "#F9A825"
+}, {
+  "color": "Yellow-900",
+  "hex": "#F57F17"
+}, {
+  "color": "Yellow-A100",
+  "hex": "#FFFF8D"
+}, {
+  "color": "Yellow-A200",
+  "hex": "#FFFF00"
+}, {
+  "color": "Yellow-A400",
+  "hex": "#FFEA00"
+}, {
+  "color": "Yellow-A700",
+  "hex": "#FFD600"
+}, {
+  "color": "Amber",
+  "hex": "#FFC107"
+}, {
+  "color": "Amber-50",
+  "hex": "#FFF8E1"
+}, {
+  "color": "Amber-100",
+  "hex": "#FFECB3"
+}, {
+  "color": "Amber-200",
+  "hex": "#FFE082"
+}, {
+  "color": "Amber-300",
+  "hex": "#FFD54F"
+}, {
+  "color": "Amber-400",
+  "hex": "#FFCA28"
+}, {
+  "color": "Amber-500",
+  "hex": "#FFC107"
+}, {
+  "color": "Amber-600",
+  "hex": "#FFB300"
+}, {
+  "color": "Amber-700",
+  "hex": "#FFA000"
+}, {
+  "color": "Amber-800",
+  "hex": "#FF8F00"
+}, {
+  "color": "Amber-900",
+  "hex": "#FF6F00"
+}, {
+  "color": "Amber-A100",
+  "hex": "#FFE57F"
+}, {
+  "color": "Amber-A200",
+  "hex": "#FFD740"
+}, {
+  "color": "Amber-A400",
+  "hex": "#FFC400"
+}, {
+  "color": "Amber-A700",
+  "hex": "#FFAB00"
+}, {
+  "color": "Orange",
+  "hex": "#FF9800"
+}, {
+  "color": "Orange-50",
+  "hex": "#FFF3E0"
+}, {
+  "color": "Orange-100",
+  "hex": "#FFE0B2"
+}, {
+  "color": "Orange-200",
+  "hex": "#FFCC80"
+}, {
+  "color": "Orange-300",
+  "hex": "#FFB74D"
+}, {
+  "color": "Orange-400",
+  "hex": "#FFA726"
+}, {
+  "color": "Orange-500",
+  "hex": "#FF9800"
+}, {
+  "color": "Orange-600",
+  "hex": "#FB8C00"
+}, {
+  "color": "Orange-700",
+  "hex": "#F57C00"
+}, {
+  "color": "Orange-800",
+  "hex": "#EF6C00"
+}, {
+  "color": "Orange-900",
+  "hex": "#E65100"
+}, {
+  "color": "Orange-A100",
+  "hex": "#FFD180"
+}, {
+  "color": "Orange-A200",
+  "hex": "#FFAB40"
+}, {
+  "color": "Orange-A400",
+  "hex": "#FF9100"
+}, {
+  "color": "Orange-A700",
+  "hex": "#FF6D00"
+}, {
+  "color": "Deep-Orange",
+  "hex": "#FF5722"
+}, {
+  "color": "Deep-Orange-50",
+  "hex": "#FBE9E7"
+}, {
+  "color": "Deep-Orange-100",
+  "hex": "#FFCCBC"
+}, {
+  "color": "Deep-Orange-200",
+  "hex": "#FFAB91"
+}, {
+  "color": "Deep-Orange-300",
+  "hex": "#FF8A65"
+}, {
+  "color": "Deep-Orange-400",
+  "hex": "#FF7043"
+}, {
+  "color": "Deep-Orange-500",
+  "hex": "#FF5722"
+}, {
+  "color": "Deep-Orange-600",
+  "hex": "#F4511E"
+}, {
+  "color": "Deep-Orange-700",
+  "hex": "#E64A19"
+}, {
+  "color": "Deep-Orange-800",
+  "hex": "#D84315"
+}, {
+  "color": "Deep-Orange-900",
+  "hex": "#BF360C"
+}, {
+  "color": "Deep-Orange-A100",
+  "hex": "#FF9E80"
+}, {
+  "color": "Deep-Orange-A200",
+  "hex": "#FF6E40"
+}, {
+  "color": "Deep-Orange-A400",
+  "hex": "#FF3D00"
+}, {
+  "color": "Deep-Orange-A700",
+  "hex": "#DD2C00"
+}, {
+  "color": "Brown",
+  "hex": "#795548"
+}, {
+  "color": "Brown-50",
+  "hex": "#EFEBE9"
+}, {
+  "color": "Brown-100",
+  "hex": "#D7CCC8"
+}, {
+  "color": "Brown-200",
+  "hex": "#BCAAA4"
+}, {
+  "color": "Brown-300",
+  "hex": "#A1887F"
+}, {
+  "color": "Brown-400",
+  "hex": "#8D6E63"
+}, {
+  "color": "Brown-500",
+  "hex": "#795548"
+}, {
+  "color": "Brown-600",
+  "hex": "#6D4C41"
+}, {
+  "color": "Brown-700",
+  "hex": "#5D4037"
+}, {
+  "color": "Brown-800",
+  "hex": "#4E342E"
+}, {
+  "color": "Brown-900",
+  "hex": "#3E2723"
+}, {
+  "color": "Grey",
+  "hex": "#9E9E9E"
+}, {
+  "color": "Grey-50",
+  "hex": "#FAFAFA"
+}, {
+  "color": "Grey-100",
+  "hex": "#F5F5F5"
+}, {
+  "color": "Grey-200",
+  "hex": "#EEEEEE"
+}, {
+  "color": "Grey-300",
+  "hex": "#E0E0E0"
+}, {
+  "color": "Grey-400",
+  "hex": "#BDBDBD"
+}, {
+  "color": "Grey-500",
+  "hex": "#9E9E9E"
+}, {
+  "color": "Grey-600",
+  "hex": "#757575"
+}, {
+  "color": "Grey-700",
+  "hex": "#616161"
+}, {
+  "color": "Grey-800",
+  "hex": "#424242"
+}, {
+  "color": "Grey-900",
+  "hex": "#212121"
+}, {
+  "color": "Blue-Grey",
+  "hex": "#607D8B"
+}, {
+  "color": "Blue-Grey-50",
+  "hex": "#ECEFF1"
+}, {
+  "color": "Blue-Grey-100",
+  "hex": "#CFD8DC"
+}, {
+  "color": "Blue-Grey-200",
+  "hex": "#B0BEC5"
+}, {
+  "color": "Blue-Grey-300",
+  "hex": "#90A4AE"
+}, {
+  "color": "Blue-Grey-400",
+  "hex": "#78909C"
+}, {
+  "color": "Blue-Grey-500",
+  "hex": "#607D8B"
+}, {
+  "color": "Blue-Grey-600",
+  "hex": "#546E7A"
+}, {
+  "color": "Blue-Grey-700",
+  "hex": "#455A64"
+}, {
+  "color": "Blue-Grey-800",
+  "hex": "#37474F"
+}, {
+  "color": "Blue-Grey-900",
+  "hex": "#263238"
+}, {
+  "color": "Black",
+  "hex": "#000000"
+}, {
+  "color": "White",
+  "hex": "#ffffff"
+}]

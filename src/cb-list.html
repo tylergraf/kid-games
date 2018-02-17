@@ -1,0 +1,210 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="./kg-taxonomy.html">
+<link rel="import" href="./kg-favorite.html">
+
+<dom-module id="kg-list">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: block;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      a {
+        color: currentColor;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      li:first-of-type {
+        padding-top: 0;
+      }
+
+      li {
+        border-bottom: var(--separator-border);
+        overflow-wrap: break-word;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .title {
+        flex: 1;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      a {
+        display: flex;
+        flex-flow: row;
+        padding: 8px 0;
+        text-decoration: none;
+        flex-grow: 1;
+      }
+      .info-wrapper {
+        display: flex;
+        flex-flow: column;
+      }
+      .count {
+        font-weight: bold;
+        color: var(--detail-font-color);
+        align-self: center;
+        min-width: 1em;
+        text-align: right;
+        margin-right: 5px;
+        align-self: flex-start;
+        flex-shrink: 0;
+      }
+
+      .info, .domain {
+        display: block;
+        color: var(--detail-font-color);
+      }
+
+      .domain {
+        padding-left: 4px;
+        word-break: break-all;
+      }
+
+      .info {
+        font-size: var(--detail-font-size);
+        color: var(--detail-font-color);
+        padding-top: 8px;
+      }
+
+      .info > a {
+        color: var(--detail-font-color);
+      }
+
+      .spacer {
+        padding-right: .5em;
+      }
+
+      .forwardback {
+        padding-top: 16px;
+        display: flex;
+      }
+
+      .forwardback > a {
+        text-decoration: none;
+      }
+
+      .forwardback > span {
+        flex: 1;
+        text-align: center;
+      }
+      kg-taxonomy {
+        margin-bottom: 15px;
+      }
+      .flex {
+        flex-grow: 1;
+      }
+      .heading {
+        text-transform:capitalize;
+      }
+    </style>
+    <h2 hidden="[[!heading]]" class="heading">[[heading]]</h2>
+    <kg-taxonomy hidden="[[hideTaxonomy]]" category="[[_getCategory(list)]]" subcategory="[[_getSubcategory(list)]]"></kg-taxonomy>
+    <dom-if if="[[_showNoItems(list, loading)]]">
+      <template>
+        <p>No items.</p>
+      </template>
+    </dom-if>
+    <dom-if if="[[list.length]]">
+      <template>
+        <ul>
+          <template is="dom-repeat" items="[[list]]" initial-count="10">
+            <li>
+              <a href="[[item.url]]">
+                <span class="count" title="[[_countTitle(item.recipeCount,item.views)]]" hidden="[[!_countExists(item.recipeCount,item.views)]]">[[_showCount(item.recipeCount,item.views)]]</span>
+                <span class="info-wrapper">
+                  <span class="title" inner-h-t-m-l="[[item.title]]"></span>
+                  <span class="info" hidden="[[!item.subtitle]]" inner-h-t-m-l="[[item.subtitle]]"></span>
+                </span>
+              </a>
+              <kg-favorite hidden="[[!item.ingredients]]" recipe-id="[[item._id]]" count="[[item.favorites]]" favorited="[[item.favorited]]"></kg-favorite>
+            </li>
+          </template>
+        </ul>
+      </template>
+    </dom-if>
+    <!-- <div class="forwardback">
+      <a class="prev" href="/[[type]]/[[_computePrevPage(page)]]" aria-label="Previous Page">◀ Previous</a>
+      <span>Page [[page]]</span>
+      <a class="next" href="/[[type]]/[[_computeNextPage(page)]]" aria-label="Next Page">Next ▶</a>
+    </div> -->
+
+  </template>
+  <script>
+  (function() {
+
+    class HnList extends Polymer.Element {
+
+      static get is() { return 'kg-list'; }
+
+      static get properties() {
+        return {
+          pageSize: Number,
+          hideTaxonomy: {
+            type: Boolean,
+            value: true
+          },
+          list: {
+            type: Array,
+            value: []
+          },
+          loading: Boolean,
+          heading: String
+        };
+      }
+      _getCategory(list){
+        if(list === undefined || !list.length) return;
+        return list[0]._category || list[0]._subcategory && list[0]._subcategory._category;
+      }
+      _getSubcategory(list){
+        if(list === undefined || !list.length) return;
+        return list[0]._subcategory;
+      }
+
+      _computePrevPage(page) {
+        return (parseInt(page || 2) - 1) || 1;
+      }
+      _showNoItems(list,loading){
+        return !list.length && !loading;
+      }
+      _countExists(count, views) {
+        return (count !== undefined || views !== undefined);
+      }
+      _countTitle(count, views) {
+        if(count !== undefined){
+          return 'Recipe Count';
+        } else if(views !== undefined) {
+          return 'Views';
+        }
+      }
+      _showCount(count, views) {
+        return count || views;
+      }
+    }
+
+    window.customElements.define(HnList.is, HnList);
+
+  })();
+  </script>
+</dom-module>

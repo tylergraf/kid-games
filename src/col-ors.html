@@ -1,0 +1,130 @@
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
+
+<dom-module id="col-ors">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        background: #fff;
+        grid-template-columns: 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px 60px;
+      }
+      button {
+        height: 60px;
+        width: 60px;
+        border: 2px solid transparent;
+        background: none;
+        margin-left: 5px;
+        cursor: pointer;
+      }
+      [color=blue] {
+        background-color: #2196F3;
+      }
+      [color=red] {
+        background-color: #f44336;
+      }
+      [color=green] {
+        background-color: #4CAF50;
+      }
+      [color=yellow] {
+        background-color: #FFEB3B;
+      }
+      [color=purple] {
+        background-color: #673AB7;
+      }
+      [color=brown] {
+        background-color: #795548;
+      }
+      [color=black] {
+        background-color: #212121;
+      }
+      [color=white] {
+        background-color: #fff;
+      }
+      [selected] {
+        border-color: #000;
+      }
+      @media(max-width: 480px){
+        button {
+          width: 30px;
+          height: 30px;
+        }
+      }
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+    <button on-click="_showColors" style$="background-color:[[hex]];">Choose Color</button>
+    <ul id="colors" hidden="[[_hideColors]]">
+      <template is="dom-repeat" items="[[colors]]">
+        <li><button selected$="[[_colorSelected(item.color, item.hex)]]" hex$="[[item.hex]]" style$="background-color:[[item.hex]];" color$="[[item.color]]" type="button" on-click="_selectColor"></button></li>
+      </template>
+    </ul>
+
+  </template>
+
+  <script>
+  (()=>{
+
+    class ColorsElement extends Polymer.Element {
+      static get is() { return 'col-ors'; }
+      static get properties() {
+        return {
+          color: {
+            type: String,
+            value: function(){
+              return sessionStorage['color'];
+            },
+            notify: true
+          },
+          _hideColors: {
+            type: Boolean,
+            value: true
+          },
+          hex: {
+            type: String,
+            value: function(){
+              return sessionStorage['hex'] || '#2196F3';
+            },
+            notify: true
+          }
+        };
+      }
+      _showColors(){
+        this._hideColors = !this._hideColors;
+      }
+      ready(){
+        super.ready();
+
+        fetch('/src/colors.json')
+        .then(res=>res.json())
+        .then(data=>{
+          this.colors = data;
+        })
+      }
+      _selectColor(e){
+        this.color = e.currentTarget.getAttribute('color');
+        this.hex = e.currentTarget.getAttribute('hex');
+        sessionStorage['color'] = this.color;
+        sessionStorage['hex'] = this.hex;
+        this._hideColors = true;
+      }
+      _colorSelected(itemColor, color){
+        if(color === undefined) return;
+
+        return itemColor === color;
+      }
+      // static get observers() {
+      //   return [];
+      // }
+    }
+    window.customElements.define(ColorsElement.is, ColorsElement);
+
+  })();
+  </script>
+</dom-module>

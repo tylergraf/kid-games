@@ -1,0 +1,203 @@
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/src/col-ors.html">
+<link rel="import" href="/src/to-ols.html">
+<script src="/bower_components/sketch.js/js/sketch.js"></script>
+
+<dom-module id="draw-ing">
+  <template>
+    <style>
+      :host {
+        display: block;
+        background-repeat: no-repeat;
+        /* background-size: contain; */
+        font-family: sans-serif;
+      }
+      header {
+        position: absolute;
+        top: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+      }
+      footer {
+        position: absolute;
+        bottom: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+      }
+      canvas {
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+      button {
+        background: none;
+        border: none;
+        font-size: 20px;
+        font-family: sans-serif;
+        font-weight: bold;
+        padding: 10px;
+        margin: 0;
+        cursor: pointer;
+      }
+      .background-img {
+        display: flex;
+        flex-flow: column;
+        margin: 10px;
+        width: 400px;
+      }
+      .background-img input {
+        border: 1px solid #ccc;
+      }
+    </style>
+    <header>
+      <button on-click="_clear">x</button>
+      <col-ors color="{{_color}}" hex="{{_hex}}"></col-ors>
+      <to-ols></to-ols>
+    </header>
+    <footer>
+      <div class="background-img">
+        <label for="img">Background Image</label>
+        <input id="img" value="{{image::input}}">
+      </div>
+    </footer>
+
+  </template>
+  <script>
+
+  var radius = 0;
+
+  (()=>{
+    var mouseIsDown = false;
+
+    class DrawingElement extends Polymer.Element {
+      static get is() { return 'draw-ing'; }
+
+      static get observers() {
+        return [
+          '_imageObserver(image)'
+        ]
+      }
+      _imageObserver(image){
+        if(image === undefined) return;
+        this.img = new Image();
+        this.img.src = image;
+
+        this.style.backgroundImage = `url(${image})`;
+        this.socket.emit('emit-background',image);
+      }
+      _clear(){
+        this.sketch.clear();
+        this.socket.emit('emit-clear');
+      }
+      ready(){
+        super.ready();
+
+        this.socket = {
+          on: function(){},
+          emit: function(){}
+        };
+        this.socket.on('setup-drawing',d=>{
+          d.events.forEach(({touch,i, color, radius})=>{
+            this.sketch.draw(touch, i, color, radius);
+          });
+          this.image = d.background;
+        });
+        this.socket.on('listen-redraw',d=>{
+          d.events.forEach(({touch,i, color, radius})=>{
+            this.sketch.draw(touch, i, color, radius);
+          });
+          this.image = d.background;
+        });
+
+        this.socket.on('listen-background', e=>{
+          this.image = e;
+        });
+        this.socket.on('listen-clear', ()=>{
+          this.sketch.clear();
+        });
+
+        this.socket.on('listen-draw', ({touch,i, color, radius})=>{
+          this.sketch.draw(touch, i, color, radius);
+        })
+
+        this.sketch = Sketch.create({
+          container: this,
+          autoclear: false,
+          retina: 'auto',
+          setup: function() {
+            this.container.shadowRoot.appendChild(this.container.querySelector('canvas'))
+          },
+
+          update: function() {
+              radius = 2 + abs( sin( this.millis * 0.003 ) * 5 );
+          },
+
+          // Event handlers
+
+          keydown: function() {
+            if ( this.keys.C ) {
+              this.container._clear();
+            }
+          },
+          draw: function(e,i=0, color, rad){
+            if(!e) return;
+            this.lineCap = 'round';
+            this.lineJoin = 'round';
+            this.fillStyle = this.strokeStyle = color;
+            this.lineWidth = rad;
+            let height = (this.container.img && this.container.img.height) ? this.container.img.height+this.height/this.container.img.height : this.height;
+            // let width = (this.container.img && this.container.img.width) ? this.container.img.width : this.width;
+            this.beginPath();
+            // this.moveTo( e.relativeOX*this.width, e.relativeOY*this.height );
+            // this.lineTo( e.relativeX*this.width, e.relativeY*this.height );
+            this.moveTo( e.ox, e.oy );
+            this.lineTo( e.x, e.y );
+            this.stroke();
+          },
+          mousedown: function(e){
+            mouseIsDown = true;
+          },
+          mouseup: function(e){
+            mouseIsDown = false;
+          },
+          // Mouse & touch events are merged, so handling touch events by default
+          // and powering sketches using the touches array is recommended for easy
+          // scalability. If you only need to handle the mouse / desktop browsers,
+          // use the 0th touch element and you get wider device support for free.
+          touchmove: function(e) {
+            if(e.type === 'mousemove' && !mouseIsDown) return;
+
+              for ( var i = this.touches.length - 1, touch; i >= 0; i-- ) {
+
+                  const touch = this.touches[i];
+                  touch.relativeX = touch.x/this.width;
+                  touch.relativeY = touch.y/this.height;
+                  touch.relativeOX = touch.ox/this.width;
+                  touch.relativeOY = touch.oy/this.height;
+
+                  // touch.relativeX = touch.x;
+                  // touch.relativeY = touch.y;
+                  // touch.relativeOX = touch.ox;
+                  // touch.relativeOY = touch.oy;
+
+                  this.draw(touch,i, this.container._hex, radius);
+                  this.container.socket.emit('touch-draw',{touch, i, color:this.container._hex, radius});
+              }
+          },
+          resize: function(){
+            this.container.socket.emit('redraw');
+          }
+        });
+      }
+
+    }
+    window.customElements.define(DrawingElement.is, DrawingElement);
+
+  })();
+  </script>
+</dom-module>
